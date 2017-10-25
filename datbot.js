@@ -48,7 +48,7 @@ client.on('message', message => {
             // Quote the man himself
             const ermin = client.emojis.find("name", "incest");
 
-            switch(Math.ceil(Math.random()*6)) {
+            switch(Math.ceil(Math.random()*7)) {
               case 1: 
                 message.channel.send(`${ermin} Drenge, skal vi ikke spille noget minecraft? ${ermin}`);
                 break;
@@ -68,7 +68,7 @@ client.on('message', message => {
                  message.channel.send(`${ermin} Klokken er 3 om natten... Min pik er stiv... Sover min søster? ${ermin}`);
                  break;
               case 7: 
-                 message.channel.send(`${ermin} <blank5> ${ermin}`);
+                 message.channel.send(`${ermin} (red.) Sudo? Er det ligesom sådan noget Sudoku? ${ermin}`);
                  break;
               case 8: 
                  message.channel.send(`${ermin} <blank6> ${ermin}`);
