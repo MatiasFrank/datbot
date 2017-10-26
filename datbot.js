@@ -64,6 +64,14 @@ client.on('message', message => {
         const quote_index = parseInt(message.content.substring(7,8))
         message.channel.send(`${ermin} ${quotes.ermin[quote_index]} ${ermin}`)
     }
+    if (message.content.substring(0,6) === "!react") {
+        const messages = message.channel.fetchMessages({limit: 5});
+        for (i = 0; i < messages.length; i++) {
+            messages[i].react(client.emojis.find("name", "incest"));
+        }
+    }
+    
+    }
 });
 
 // Log our bot in
