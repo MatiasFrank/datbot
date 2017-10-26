@@ -82,12 +82,11 @@ client.on('message', message => {
             break;
         
         case '!react':
-            console.log("Reacted!")
-            const messages = message.channel.fetchMessages({limit: 5})
+            // React with Ermin's face on the last five messages posted
+            console.log("Reacted!");
+            message.channel.fetchMessages({limit: 5})
                 .then((result) => {
-                    //console.log(result);
                     result.forEach(message => {
-                        //console.log(message);
                         message.react(ermin);
                     })
                 });
