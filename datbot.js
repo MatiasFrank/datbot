@@ -3,7 +3,7 @@
 */
 
 // Link to GitHub repo
-const link = 'https://github.com/kuff/datbot'
+const github = 'https://github.com/kuff/datbot'
 
 // Import the discord.js module
 const Discord = require('discord.js');
@@ -65,7 +65,7 @@ client.on('message', message => {
                     icon_url: client.user.avatarURL
                 },
                 title: "GitHub repo",
-                url: link,
+                url: github,
                 description: "Feel free to suggest features or fork and make a pull request!",
                 fields: [{
                     name: "!ping",
