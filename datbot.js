@@ -85,7 +85,7 @@ client.on('message', message => {
     }
         if (message.content.substring(0,6).equals("!ermin") == true) {
             const ermin = client.emojis.find("name", "incest");
-            switch(parseInt(message.content.substring(8,8))) {
+            switch(parseInt(message.content.substring(7,8))) {
               case 1: 
                 message.channel.send(`${ermin} Drenge, skal vi ikke spille noget minecraft? ${ermin}`);
                 break;
