@@ -7,7 +7,12 @@ const link = 'https://github.com/kuff/datbot'
 
 // Import the discord.js module
 const Discord = require('discord.js');
+
+const jsonSize = require('json-size');
+
+// Import json files
 const config = require('./settings.json');
+const quotes = require('./quotes.json');
 
 // Create an instance of a Discord client
 const client = new Discord.Client();
@@ -23,6 +28,9 @@ client.on('ready', () => {
 
 // Create an event listener for messages
 client.on('message', message => {
+    // Defining emotes
+    const ermin = client.emojis.find("name", "incest");
+
     // Switch between different cases
     switch(message.content) {
         
@@ -45,112 +53,16 @@ client.on('message', message => {
             message.channel.send('Thats right! You\'re welcome to add features to the bot, ' + message.author + ' - ' + link);
             break;
 
-        /*case '!ermin':
+        case '!ermin':
             // Quote the man himself
-            const ermin = client.emojis.find("name", "incest");
-
-            switch(Math.ceil(Math.random()*7)) {
-              case 1: 
-                message.channel.send(`${ermin} Drenge, skal vi ikke spille noget minecraft? ${ermin}`);
-                break;
-              case 2: 
-                 message.channel.send(`${ermin} Pokémon, jeg vælger dig! ${ermin}`);
-                 break;
-              case 3: 
-                 message.channel.send(`${ermin} Jeg har lyst til at X med min søsters Y ${ermin}`);
-                 break;
-              case 4: 
-                 message.channel.send(`${ermin} Ej, Calculus Beta. Det er er bare det fedeste fag NOGENSINDE. ${ermin}`);
-                 break;
-              case 5: 
-                 message.channel.send(`${ermin} Hvad? ${ermin}`);
-                 break;
-              case 6: 
-                 message.channel.send(`${ermin} Klokken er 3 om natten... Min pik er stiv... Sover min søster? ${ermin}`);
-                 break;
-              case 7: 
-                 message.channel.send(`${ermin} (red.) Sudo? Er det ligesom sådan noget Sudoku? ${ermin}`);
-                 break;
-              case 8: 
-                 message.channel.send(`${ermin} <blank6> ${ermin}`);
-                 break;
-              case 9: 
-                 message.channel.send(`${ermin} <blank7> ${ermin}`);
-                 break;
-              case 10: 
-                 message.channel.send(`${ermin} <blank8> ${ermin}`);
-                 break;
-            }
-            break;*/
+            const random_choice = Math.ceil(Math.random()*quotes.ermin.amount)
+            message.channel.send(`${ermin} ${quotes.ermin[random_choice]} ${ermin}`)
+            break;
     }
-        if (message.content.substring(0,6).equals("!ermin") == true) {
-            const ermin = client.emojis.find("name", "incest");
-            switch(message.content.substring(8,8)) {
-              case 1: 
-                message.channel.send(`${ermin} Drenge, skal vi ikke spille noget minecraft? ${ermin}`);
-                break;
-              case 2: 
-                 message.channel.send(`${ermin} Pokémon, jeg vælger dig! ${ermin}`);
-                 break;
-              case 3: 
-                 message.channel.send(`${ermin} Jeg har lyst til at X med min søsters Y ${ermin}`);
-                 break;
-              case 4: 
-                 message.channel.send(`${ermin} Ej, Calculus Beta. Det er er bare det fedeste fag NOGENSINDE. ${ermin}`);
-                 break;
-              case 5: 
-                 message.channel.send(`${ermin} Hvad? ${ermin}`);
-                 break;
-              case 6: 
-                 message.channel.send(`${ermin} Klokken er 3 om natten... Min pik er stiv... Sover min søster? ${ermin}`);
-                 break;
-              case 7: 
-                 message.channel.send(`${ermin} (red.) Sudo? Er det ligesom sådan noget Sudoku? ${ermin}`);
-                 break;
-              case 8: 
-                 message.channel.send(`${ermin} <blank6> ${ermin}`);
-                 break;
-              case 9: 
-                 message.channel.send(`${ermin} <blank7> ${ermin}`);
-                 break;
-              case 10: 
-                 message.channel.send(`${ermin} <blank8> ${ermin}`);
-                 break;
-              default:
-                  switch(Math.ceil(Math.random()*7)) {
-                    case 1: 
-                      message.channel.send(`${ermin} Drenge, skal vi ikke spille noget minecraft? ${ermin}`);
-                      break;
-                    case 2: 
-                       message.channel.send(`${ermin} Pokémon, jeg vælger dig! ${ermin}`);
-                       break;
-                    case 3: 
-                       message.channel.send(`${ermin} Jeg har lyst til at X med min søsters Y ${ermin}`);
-                       break;
-                    case 4: 
-                       message.channel.send(`${ermin} Ej, Calculus Beta. Det er er bare det fedeste fag NOGENSINDE. ${ermin}`);
-                       break;
-                    case 5: 
-                       message.channel.send(`${ermin} Hvad? ${ermin}`);
-                       break;
-                    case 6: 
-                       message.channel.send(`${ermin} Klokken er 3 om natten... Min pik er stiv... Sover min søster? ${ermin}`);
-                       break;
-                    case 7: 
-                       message.channel.send(`${ermin} (red.) Sudo? Er det ligesom sådan noget Sudoku? ${ermin}`);
-                       break;
-                    case 8: 
-                       message.channel.send(`${ermin} <blank6> ${ermin}`);
-                       break;
-                    case 9: 
-                       message.channel.send(`${ermin} <blank7> ${ermin}`);
-                       break;
-                    case 10: 
-                       message.channel.send(`${ermin} <blank8> ${ermin}`);
-                       break;
-                  }
-            }
-        }
+
+    if (message.content.substring(0,6) === "!ermin" && message.content.length > 7) {
+        const quote_index = parseInt(message.content.substring(7,8))
+        message.channel.send(`${ermin} ${quotes.ermin[quote_index]} ${ermin}`)
     }
 });
 
