@@ -28,11 +28,15 @@ client.on('ready', () => {
 
 // Create an event listener for messages
 client.on('message', message => {
-    // Defining emotes
+    // Defining emotes here
     const ermin = client.emojis.find("name", "incest");
 
+    // Find words in the message
+    const words = message.content.split(" ");
+    //console.log("Words in message: " + words)
+
     // Switch between different cases
-    switch(message.content) {
+    switch(words[0]) {
         
         case '!ping':
             // Pong the pinger!
@@ -55,22 +59,41 @@ client.on('message', message => {
 
         case '!ermin':
             // Quote the man himself
-            const random_choice = Math.ceil(Math.random()*quotes.ermin.amount)
-            message.channel.send(`${ermin} ${quotes.ermin[random_choice]} ${ermin}`)
+            if (words[1] != undefined) {
+                // Is a specific quote being requested?
+                if (quotes.ermin[words[1]] != undefined) {
+                    message.channel.send(`${ermin} ${quotes.ermin[words[1]]} ${ermin}`)
+                }
+                else {
+                    // Handling invalid inputs
+                    if (quotes.ermin.amount < words[1]) {
+                        message.channel.send("Error: We do not have that many ermin quotes... yet!");
+                    }
+                    else {
+                        message.channel.send("Error: Unexpected input. Try: >> !ermin { Integer } <<");
+                    }
+                }
+            }
+            else {
+                // If no specific quote is being requested, choose one at random
+                const random_choice = Math.ceil(Math.random()*quotes.ermin.amount)
+                message.channel.send(`${ermin} ${quotes.ermin[random_choice]} ${ermin}`)
+            }
             break;
+        
+        /*case '!react':
+            const messages = message.channel.fetchMessages({limit: 5});
+            for (i = 0; i < messages.length; i++) {
+                messages[i].react(client.emojis.find("name", "incest"));
+            }*/
     }
 
-    if (message.content.substring(0,6) === "!ermin" && message.content.length > 7) {
-        const quote_index = parseInt(message.content.substring(7,8))
-        message.channel.send(`${ermin} ${quotes.ermin[quote_index]} ${ermin}`)
-    }
+    // Tror ikke denne virker, Christian :P
     if (message.content.substring(0,6) === "!react") {
         const messages = message.channel.fetchMessages({limit: 5});
         for (i = 0; i < messages.length; i++) {
             messages[i].react(client.emojis.find("name", "incest"));
         }
-    }
-    
     }
 });
 
