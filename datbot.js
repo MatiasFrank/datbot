@@ -81,19 +81,17 @@ client.on('message', message => {
             }
             break;
         
-        /*case '!react':
-            const messages = message.channel.fetchMessages({limit: 5});
-            for (i = 0; i < messages.length; i++) {
-                messages[i].react(client.emojis.find("name", "incest"));
-            }*/
-    }
-
-    // Tror ikke denne virker, Christian :P
-    if (message.content.substring(0,6) === "!react") {
-        const messages = message.channel.fetchMessages({limit: 5});
-        for (i = 0; i < messages.length; i++) {
-            messages[i].react(client.emojis.find("name", "incest"));
-        }
+        case '!react':
+            console.log("Reacted!")
+            const messages = message.channel.fetchMessages({limit: 5})
+                .then((result) => {
+                    //console.log(result);
+                    result.forEach(message => {
+                        //console.log(message);
+                        message.react(ermin);
+                    })
+                });
+            break;
     }
 });
 
