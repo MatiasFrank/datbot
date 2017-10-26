@@ -7,12 +7,13 @@ const link = 'https://github.com/kuff/datbot'
 
 // Import the discord.js module
 const Discord = require('discord.js');
+const config = require('./settings.json');
 
 // Create an instance of a Discord client
 const client = new Discord.Client();
 
 // The token of your bot - https://discordapp.com/developers/applications/me
-const token = 'MzcyODE3MTgwNTIzMjMzMjgw.DNJtJw.jqVrvYwJcGE6FgJodtRHy8ssCjQ';
+const token = config.token
 
 // The ready event is vital, it means that your bot will only start reacting to information
 // from Discord _after_ ready is emitted
@@ -38,10 +39,10 @@ client.on('message', message => {
             break;
 
         case '!code': // Nesting cases creates synonyms!
-        case '!contribute':
+        case '!github': //(Because there are no break statements)
         case '!source':
             // Send a link to the source code
-            message.channel.send('Here ye go, ' + message.author + ' - ' + link);
+            message.channel.send('Thats right! You\'re welcome to add features to the bot, ' + message.author + ' - ' + link);
             break;
 
         case '!ermin':
