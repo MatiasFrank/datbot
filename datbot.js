@@ -52,8 +52,7 @@ client.on('message', message => {
             break; // Remember to break!
 
         case '!help':
-            // Send a pm with a table of useful commands 
-            // (find out how to format a table of useful commands)
+            // Send a pm with a table of available commands
             message.channel.send('Sent help!')
             message.author.sendMessage({embed: {
                 color: 3447003,
@@ -62,7 +61,7 @@ client.on('message', message => {
                     icon_url: client.user.avatarURL
                 },
                 title: "GitHub repo",
-                url: link,
+                url: github,
                 description: "Feel free to suggest features or fork and make a pull request!",
                 fields: [{
                     name: "!ping",
@@ -129,22 +128,55 @@ client.on('message', message => {
             break;
         
         case '!play':
+            // Playback link passed as parameter
             if (words[1] != undefined) {
+                // If a link is given, play it
                 const link = words[1];
                 const streamOptions = { seek: 0, volume: 1 };
                 const broadcast = client.createVoiceBroadcast();
             
-                message.member.voiceChannel.join().then(connection => {
-                    const stream = ytdl(link, { filter: 'audioonly' });
-                    broadcast.playStream(stream);
-                    const dispatcher = connection.playBroadcast(broadcast);
-                    // Find a way to leave voice chat once breadcast has ended
-                })
-                .catch(console.error);
+                message.member.voiceChannel.join()
+                    .then(connection => {
+                        const stream = ytdl(link, { filter: 'audioonly' });
+
+                        broadcast.playStream(stream);
+                        connection.playBroadcast(broadcast);
+
+                        broadcast.once('end', () => {
+                            connection.disconnect();
+                        });
+                    })
+                    .catch(console.error);
             }
             else {
-                // handle incorrect input - did not specify link
+                // handle incorrect input - no link specified
             }
+        
+        case '!volume':
+            // Changes volume to specified value if integer value is specified,
+            // else return value
+            break;
+        
+        case '!pause':
+            // Pause playback
+            // Some logic
+            broadcast.pause();
+            break;
+        
+        case '!resume':
+            // Resume playback
+            // Some logic
+            broadcast.resume();
+            break;
+        
+        case '!queue':
+            // Queue song passed as link
+            // Show queued songs when no parameters are specified
+            break;
+        
+        case '!skip':
+            // Skip song currently playing and play next in queue
+            break;
     }
 
     words.find((elem) => {
