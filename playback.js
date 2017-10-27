@@ -24,6 +24,8 @@ module.exports = class Playback {
                     // Handle queues
                         connection.disconnect();
                 });
+
+                // End playback if no one's listening
             });
         }
         else {

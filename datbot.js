@@ -9,7 +9,7 @@ const config = require('./settings.json'); // Import json files
 const quotes = require('./quotes.json');
 
 // Link to GitHub repo
-const github = 'https://github.com/kuff/datbot'
+const github = config.link;
 
 // The token of the bot - https://discordapp.com/developers/applications/me
 const token = config.token;
@@ -54,7 +54,6 @@ client.on('message', message => {
 
         case '!help':
             // Send a pm with a table of available commands
-            message.channel.send('Sent help!')
             message.author.sendMessage({embed: {
                 color: 3447003,
                 author: {
@@ -133,8 +132,6 @@ client.on('message', message => {
             if (words[1] != undefined) {
                 // If a link is given, play it
                 const link = words[1];
-
-                const broadcast = client.createVoiceBroadcast();
 
                 // Instanciate class and start playing
                 pb.play(link, message, client);
