@@ -2,25 +2,23 @@
   Here come DatBot - oh shit waddup!
 */
 
-// Link to GitHub repo
-const github = 'https://github.com/kuff/datbot'
-
 // Import the discord.js module
 const Discord = require('discord.js');
-
-const jsonSize = require('json-size');
 
 // Import json files
 const config = require('./settings.json');
 const quotes = require('./quotes.json');
 
+// Link to GitHub repo
+const github = config.link;
+
+// The token of the bot - https://discordapp.com/developers/applications/me
+const token = config.token;
+
 // Create an instance of a Discord client
 const client = new Discord.Client();
 
-// The token of your bot - https://discordapp.com/developers/applications/me
-const token = config.token
-
-// The ready event is vital, it means that your bot will only start reacting to information
+// The ready event is vital, it means that the bot will only start reacting to information
 // from Discord _after_ ready is emitted
 client.on('ready', () => {
     console.log('I am ready!');
@@ -30,7 +28,7 @@ client.on('ready', () => {
 // previous messages in the thread will also recieve a reaction
 function react (message, emote, limit) {
     message.channel.fetchMessages({limit: limit})
-        .then((result) => {
+        .then(result => {
             result.forEach(message => {
                 message.react(emote);
             })
@@ -44,7 +42,6 @@ client.on('message', message => {
 
     // Find words in the message
     const words = message.content.split(" ");
-    //console.log("Words in message: " + words)
 
     // Switch between different cases
     switch(words[0]) {
@@ -57,7 +54,6 @@ client.on('message', message => {
         case '!help':
             // Send a pm with a table of useful commands 
             // (find out how to format a table of useful commands)
-            message.channel.send('Sent help!')
             message.author.sendMessage({embed: {
                 color: 3447003,
                 author: {
