@@ -9,7 +9,7 @@ const config = require('./settings.json'); // Import json files
 const quotes = require('./quotes.json');
 
 // Link to GitHub repo
-const github = 'https://github.com/kuff/datbot'
+const github = config.link;
 
 // The token of the bot - https://discordapp.com/developers/applications/me
 const token = config.token;
@@ -58,7 +58,7 @@ client.on('message', message => {
             message.author.sendMessage({embed: {
                 color: 3447003,
                 author: {
-                    name: "Help has arrived!",
+                    name: "!help has arrived!",
                     icon_url: client.user.avatarURL
                 },
                 title: "GitHub repo",
@@ -134,10 +134,10 @@ client.on('message', message => {
                 // If a link is given, play it
                 const link = words[1];
 
-                const broadcast = client.createVoiceBroadcast();
+                // Verify link somehow - method in ytdl?
 
-                // Instanciate class and start playing
-                pb.play(link, message, client);
+                // Start playing
+                pb.queue(link, message, client);
             }
             else {
                 // handle incorrect input - no link specified
@@ -150,19 +150,16 @@ client.on('message', message => {
         
         case '!pause':
             // Pause playback
-            // Some logic
             pb.pause();
             break;
         
         case '!resume':
             // Resume playback
-            // Some logic
             pb.resume();
             break;
         
         case '!queue':
-            // Queue song passed as link
-            // Show queued songs when no parameters are specified
+            // Retrived all queued songs
             break;
         
         case '!skip':
