@@ -7,6 +7,7 @@ const Discord = require('discord.js'); // Import the discord.js module
 const Playback = require('./playback.js'); // Import our own player
 const config = require('./settings.json'); // Import json files
 const quotes = require('./quotes.json');
+//const Map = require('collections/map');
 
 // Link to GitHub repo
 const github = config.link;
@@ -16,7 +17,7 @@ const token = config.token;
 
 // Instanciate calsses
 const client = new Discord.Client(); // Create an instance of a Discord client
-const pb = new Playback(); // Create an instance of our player
+const pb = new Playback(client); // Create an instance of our player
 
 // The ready event is vital, it means that tbe bot will only start reacting to information
 // from Discord _after_ ready is emitted
@@ -132,7 +133,7 @@ client.on('message', message => {
             if (words[1] != undefined && message.member.voiceChannel != undefined) {
                 // If a link is given, play it
                 const link = words[1];
-                
+
                 // Start playing
                 pb.queue(link, message, client);
             }
@@ -173,6 +174,14 @@ client.on('message', message => {
         // Add handlers for other mentions here
     });
 });
+
+client.on('voiceStateUpdate', member => {
+    //const map = new Map(member.voiceChannel.members)
+    if(pb.playing && member.voiceChannel.members.size) {
+        // Disconnect from voice chat if no one's listening
+        pb.abort();
+    }
+})
 
 // Log our bot in
 client.login(token);

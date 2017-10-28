@@ -1,32 +1,37 @@
 const ytdl = require('ytdl-core');
 
 module.exports = class Playback {
-    constructor(streamOptions = { seek: 0, volume: 1 }) {
+    constructor(client, streamOptions = { seek: 0, volume: 1 }) {
+        this.client = client;
         this.streamOptions = streamOptions;
         this.playlist = new Array();
         this.playing = false;
     }
 
-    play(client, connection) {
+    abort() {
+        this.connection.disconnect();
+        this.playing = false;
+    }
+
+    play() {
         const link = this.playlist.pop();
 
         this.stream = ytdl(link, { filter: 'audioonly' });
-        const bc = client.createVoiceBroadcast();
+        const bc = this.client.createVoiceBroadcast();
         this.broadcast = bc.playStream(this.stream);
-        connection.playBroadcast(this.broadcast);
+        this.connection.playBroadcast(this.broadcast);
 
         this.broadcast.once('end', () => {
             if (this.playlist.length > 0) {
-                this.play(client, connection);
+                this.play();
             }
             else {
-                connection.disconnect();
-                this.playing = false;
+                this.abort();
             }
-        })
+        });
     }
 
-    queue(link, message, client) {
+    queue(link, message) {
         // Verify given link and play it
 
         // Verify useing ytdl?
@@ -40,9 +45,10 @@ module.exports = class Playback {
         else {
             message.member.voiceChannel.join()
                 .then(connection => {
+                    // Join voice server and start jamming!
+                    this.connection = connection;
                     this.playing = true;
-                    this.play(client, connection);
-                    // End playback if no one's listening
+                    this.play();
                 });
         }
     }
