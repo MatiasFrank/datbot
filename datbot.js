@@ -7,7 +7,7 @@ const Discord = require('discord.js'); // Import the discord.js module
 const Playback = require('./playback.js'); // Import our own player
 const config = require('./settings.json'); // Import json files
 const quotes = require('./quotes.json');
-//const Map = require('collections/map');
+//const map = require('collection').Map;
 
 // Link to GitHub repo
 const github = config.link;
@@ -163,6 +163,7 @@ client.on('message', message => {
         
         case '!skip':
             // Skip song currently playing and play next in queue
+            pb.skip();
             break;
     }
 
@@ -176,10 +177,15 @@ client.on('message', message => {
 });
 
 client.on('voiceStateUpdate', member => {
-    //const map = new Map(member.voiceChannel.members)
-    if(pb.playing && member.voiceChannel.members.size) {
-        // Disconnect from voice chat if no one's listening
-        pb.abort();
+    if (member.voiceChannel != undefined) {
+
+        const map = member.voiceChannel.members;
+        const array = Array.from(map.keys());
+        
+        if(pb.playing && array.length == 1 && array[0] === '372817180523233280') {
+            // Disconnect from voice chat if no one's listening
+            pb.end();
+        }
     }
 })
 

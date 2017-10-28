@@ -8,7 +8,7 @@ module.exports = class Playback {
         this.playing = false;
     }
 
-    abort() {
+    end() {
         this.connection.disconnect();
         this.playing = false;
     }
@@ -21,12 +21,14 @@ module.exports = class Playback {
         this.broadcast = bc.playStream(this.stream);
         this.connection.playBroadcast(this.broadcast);
 
+        console.log("Playing music!");
+
         this.broadcast.once('end', () => {
             if (this.playlist.length > 0) {
                 this.play();
             }
             else {
-                this.abort();
+                this.end();
             }
         });
     }
@@ -34,7 +36,7 @@ module.exports = class Playback {
     queue(link, message) {
         // Verify given link and play it
 
-        // Verify useing ytdl?
+        // Verify using ytdl?
 
         // Add the song to the playlist
         this.playlist.unshift(link);        
@@ -67,6 +69,8 @@ module.exports = class Playback {
 
     skip() {
         // Skip the current song being played
+        // this.broadcast.end();
+        this.play();
     }
 
     setVolume(val) {
