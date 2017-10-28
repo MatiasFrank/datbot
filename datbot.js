@@ -134,7 +134,7 @@ client.on('message', message => {
                 const link = words[1];
 
                 // Instanciate class and start playing
-                pb.play(link, message, client);
+                pb.queue(link, message, client);
             }
             else {
                 // handle incorrect input - no link specified
