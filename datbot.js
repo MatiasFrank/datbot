@@ -57,7 +57,7 @@ client.on('message', message => {
             message.author.sendMessage({embed: {
                 color: 3447003,
                 author: {
-                    name: "Help has arrived!",
+                    name: "!help has arrived!",
                     icon_url: client.user.avatarURL
                 },
                 title: "GitHub repo",
@@ -132,8 +132,8 @@ client.on('message', message => {
             if (words[1] != undefined && message.member.voiceChannel != undefined) {
                 // If a link is given, play it
                 const link = words[1];
-
-                // Instanciate class and start playing
+                
+                // Start playing
                 pb.queue(link, message, client);
             }
             else {
@@ -148,19 +148,16 @@ client.on('message', message => {
         
         case '!pause':
             // Pause playback
-            // Some logic
             pb.pause();
             break;
         
         case '!resume':
             // Resume playback
-            // Some logic
             pb.resume();
             break;
         
         case '!queue':
-            // Queue song passed as link
-            // Show queued songs when no parameters are specified
+            // Retrived all queued songs
             break;
         
         case '!skip':

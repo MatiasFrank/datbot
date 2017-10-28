@@ -27,7 +27,9 @@ module.exports = class Playback {
     }
 
     queue(link, message, client) {
-        // verify given link and play it
+        // Verify given link and play it
+
+        // Verify useing ytdl?
 
         // Add the song to the playlist
         this.playlist.unshift(link);        
@@ -40,17 +42,6 @@ module.exports = class Playback {
                 .then(connection => {
                     this.playing = true;
                     this.play(client, connection);
-                    /*this.playlist.unshift(link);
-                    while (this.playlist.length > 0) {
-                        // Play the next song in queue
-                        play(this.playlist.pop());
-                        message.channel.send("Now playing: " + link);
-
-                        this.broadcast.once('end', () => {
-                            connection.disconnect();
-                            this.playing = false;
-                        });
-                    }*/
                     // End playback if no one's listening
                 });
         }
