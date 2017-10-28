@@ -26,7 +26,7 @@ client.on('ready', () => {
 
 // React to a given message with a given emote. If a limit greater than 1 is specified,
 // previous messages in the thread will also recieve a reaction
-function react (message, emote, limit) {
+function react (message, emote, limit = 1) {
     message.channel.fetchMessages({limit: limit})
         .then(result => {
             result.forEach(message => {
@@ -82,6 +82,10 @@ client.on('message', message => {
                 {
                     name: "!ermin { Integer }",
                     value: "Retrives a specific Ermin quote, specified by an integer value."
+                },
+                {
+                    name: "!react",
+                    value: "React with Ermin's face on the last five messages posted in the channel."
                 }],
                 timestamp: new Date(),
                 footer: {
@@ -92,7 +96,7 @@ client.on('message', message => {
             break;
 
         case '!code': // Nesting cases creates synonyms!
-        case '!github': //(Because there are no break statements)
+        case '!github': // (Because there are no break statements)
         case '!source':
             // Send a link to the source code
             message.channel.send('Thats right! You\'re welcome to add features to the bot, ' + message.author + ' - ' + link);
@@ -108,10 +112,13 @@ client.on('message', message => {
                 else {
                     // Handling invalid inputs
                     if (quotes.ermin.amount < words[1]) {
-                        message.channel.send("Error: We do not have that many ermin quotes... yet!");
+                        message.channel.send("Error: We do not have that many ermin quotes yet, " + message.author + " !");
                     }
                     else {
-                        message.channel.send("Error: Unexpected input. Try: >> !ermin { Integer } <<");
+                        /*const embed = new Discord.RichEmbed({
+                            "content": "Error: Unexpected input, " + message.author + " !```plain\n > !ermin { Integer }```"
+                        })*/
+                        message.channel.send("Error: Unexpected input, " + message.author + " !```js\n > !ermin { Integer }```");
                     }
                 }
             }
@@ -128,10 +135,10 @@ client.on('message', message => {
             break;
     }
 
-    words.find((elem) => {
+    words.find(elem => {
         if (elem === "incest" || elem === "søster") {
             // If any sentence mentions "incest" or "søster", react with Ermin's face
-            react(message, ermin, 1);
+            react(message, ermin);
         }
         // Add handlers for other mentions here
     });
