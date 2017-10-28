@@ -129,7 +129,7 @@ client.on('message', message => {
         
         case '!play':
             // Playback link passed as parameter
-            if (words[1] != undefined) {
+            if (words[1] != undefined && message.member.voiceChannel != undefined) {
                 // If a link is given, play it
                 const link = words[1];
 
@@ -138,6 +138,7 @@ client.on('message', message => {
             }
             else {
                 // handle incorrect input - no link specified
+                message.channel.send(`Error: You must be in a voice channel to listen to music, ${message.author} !`);                
             }
         
         case '!volume':
