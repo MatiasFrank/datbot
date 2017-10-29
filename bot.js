@@ -6,8 +6,11 @@
 const Discord = require('discord.js');
 
 // Import json files
-const config = require('./settings.json');
+const config = require('./config.json');
 const quotes = require('./quotes.json');
+
+// Import list of commands to retrive on !help
+const helpTable = require('./helpTable.js');
 
 // Link to GitHub repo
 const github = config.link;
@@ -24,8 +27,14 @@ client.on('ready', () => {
     console.log('I am ready!');
 });
 
-// React to a given message with a given emote. If a limit greater than 1 is specified,
-// previous messages in the thread will also recieve a reaction
+/**
+ * React to a given message with a given emote. If a limit greater 
+ * than 1 is specified, previous messages in the thread will also 
+ * recieve a reaction
+ * @param {*} message 
+ * @param {*} emote 
+ * @param {*Should be at least 1} limit 
+ */
 function react (message, emote, limit = 1) {
     message.channel.fetchMessages({limit: limit})
         .then(result => {
@@ -53,46 +62,7 @@ client.on('message', message => {
 
         case '!help':
             // Send a pm with a table of useful commands 
-            // (find out how to format a table of useful commands)
-            message.author.sendMessage({embed: {
-                color: 3447003,
-                author: {
-                    name: "Help has arrived!",
-                    icon_url: client.user.avatarURL
-                },
-                title: "GitHub repo",
-                url: github,
-                description: "Feel free to suggest features or fork and make a pull request!",
-                fields: [{
-                    name: "!ping",
-                    value: "Test the bot in selected channel. Retrives \"pong\"."
-                },
-                {
-                    name: "!help",
-                    value: "The command you just typed! Learn about all available commands.",
-                },
-                {
-                    name: "!code, !github, !source",
-                    value: "Retrives a link to the github repo."
-                },
-                {
-                    name: "!ermin",
-                    value: "Retrives a random Ermin quote."
-                },
-                {
-                    name: "!ermin { Integer }",
-                    value: "Retrives a specific Ermin quote, specified by an integer value."
-                },
-                {
-                    name: "!react",
-                    value: "React with Ermin's face on the last five messages posted in the channel."
-                }],
-                timestamp: new Date(),
-                footer: {
-                    icon_url: client.user.avatarURL,
-                    text: "!help @ DatBot :*"
-                }
-            }});
+            message.author.send({embed: helpTable(github)});
             break;
 
         case '!code': // Nesting cases creates synonyms!
@@ -112,13 +82,10 @@ client.on('message', message => {
                 else {
                     // Handling invalid inputs
                     if (quotes.ermin.amount < words[1]) {
-                        message.channel.send("Error: We do not have that many ermin quotes yet, " + message.author + " !");
+                        message.reply("we do not have that many ermin quotes ... yet!");
                     }
                     else {
-                        /*const embed = new Discord.RichEmbed({
-                            "content": "Error: Unexpected input, " + message.author + " !```plain\n > !ermin { Integer }```"
-                        })*/
-                        message.channel.send("Error: Unexpected input, " + message.author + " !```js\n > !ermin { Integer }```");
+                        message.channel.send("unexpected input!```js\n > !ermin { optional: Integer }```");
                     }
                 }
             }
@@ -136,10 +103,20 @@ client.on('message', message => {
     }
 
     words.find(elem => {
-        if (elem === "incest" || elem === "søster") {
+        // For each word in message recived
+        const word = elem.toLowerCase();
+
+        const trigger1 = ["incest", "ermin", "søster"];
+        if (trigger1.indexOf(word) > 0) {
             // If any sentence mentions "incest" or "søster", react with Ermin's face
             react(message, ermin);
         }
+
+        const trigger2 = ["fuck", "shit", "lort", "røvhul"];
+        if (trigger2.indexOf(word) > 0) {
+            message.reply("tal ordenligt!")
+        }
+
         // Add handlers for other mentions here
     });
 });
