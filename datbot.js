@@ -7,13 +7,13 @@ const Discord = require('discord.js'); // Import the discord.js module
 const Playback = require('./playback.js'); // Import our own player
 const config = require('./settings.json'); // Import json files
 const quotes = require('./quotes.json');
-//const map = require('collection').Map;
 
 // Link to GitHub repo
 const github = config.link;
 
 // The token of the bot - https://discordapp.com/developers/applications/me
 const token = config.token;
+const id = config.id;
 
 // Instanciate calsses
 const client = new Discord.Client(); // Create an instance of a Discord client
@@ -25,8 +25,14 @@ client.on('ready', () => {
     console.log('I am ready!');
 });
 
-// React to a given message with a given emote. If a limit greater than 1 is specified,
-// previous messages in the thread will also recieve a reaction
+/**
+ * React to a given message with a given emote. 
+ * If a limit greater than 1 is specified, previous messages 
+ * in the thread will also recieve a reaction
+ * @param {*} message 
+ * @param {*} emote 
+ * @param {*This should be at least 1} limit 
+ */
 function react (message, emote, limit) {
     message.channel.fetchMessages({limit: limit})
         .then((result) => {
@@ -34,6 +40,17 @@ function react (message, emote, limit) {
                 message.react(emote);
             })
         });
+}
+
+/**
+ * Determines if a member is connected to the 
+ * same voice connection as the bot
+ * @param {*} member 
+ */
+function inVoice(member) {
+    const map = member.voiceChannel.members;
+    const array = Array.from(map.keys());
+    return array.includes(config.id);
 }
 
 // Create an event listener for messages
@@ -130,31 +147,45 @@ client.on('message', message => {
         
         case '!play':
             // Playback link passed as parameter
-            if (words[1] != undefined && message.member.voiceChannel != undefined) {
-                // If a link is given, play it
-                const link = words[1];
-
-                // Start playing
-                pb.queue(link, message, client);
+            if (message.member.voiceChannel != undefined) {
+                if (words[1] != undefined) {
+                    // If a link is given, play it
+                    const link = words[1];
+    
+                    // Start playing
+                    pb.queue(link, message, client);
+                }
+                else {
+                    message.reply(`you must specify a valid YouTube link!`);
+                    // Suggestion with formatting
+                }
             }
             else {
                 // handle incorrect input - no link specified
-                message.channel.send(`Error: You must be in a voice channel to listen to music, ${message.author} !`);                
+                message.reply(`you must be in a voice channel to listen to music!`);
             }
+            break;
         
         case '!volume':
-            // Changes volume to specified value if integer value is specified,
-            // else return value
+            // Changes volume to specified value if integer value 
+            // is specified, else return value
+            if (inVoice(message.member)) {
+                // The codezz
+            }
             break;
         
         case '!pause':
             // Pause playback
-            pb.pause();
+            if (inVoice(message.member)) {
+                pb.pause();
+            }
             break;
         
         case '!resume':
             // Resume playback
-            pb.resume();
+            if (inVoice(message.member)) {
+                pb.resume();
+            }
             break;
         
         case '!queue':
@@ -163,7 +194,9 @@ client.on('message', message => {
         
         case '!skip':
             // Skip song currently playing and play next in queue
-            pb.skip();
+            if (inVoice(message.member)) {
+                pb.skip();
+            }
             break;
     }
 
@@ -180,9 +213,9 @@ client.on('voiceStateUpdate', member => {
     if (member.voiceChannel != undefined) {
 
         const map = member.voiceChannel.members;
-        const array = Array.from(map.keys());
+        //const array = Array.from(map.keys());
         
-        if(pb.playing && array.length == 1 && array[0] === '372817180523233280') {
+        if(pb.playing && map.size == 1 && inVoice(member)) {
             // Disconnect from voice chat if no one's listening
             pb.end();
         }
