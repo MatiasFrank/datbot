@@ -5,19 +5,14 @@
 // Various imports
 const Discord = require('discord.js'); // Import the discord.js module
 const Playback = require('./playback.js'); // Import our own player
-const config = require('./settings.json'); // Import json files
+const config = require('./config.json'); // Import json files
 const quotes = require('./quotes.json');
-
-// Link to GitHub repo
-const github = config.link;
-
-// The token of the bot - https://discordapp.com/developers/applications/me
-const token = config.token;
-const id = config.id;
 
 // Instanciate calsses
 const client = new Discord.Client(); // Create an instance of a Discord client
 const pb = new Playback(client); // Create an instance of our player
+
+const id = client.ping;
 
 // The ready event is vital, it means that tbe bot will only start reacting to information
 // from Discord _after_ ready is emitted
@@ -50,7 +45,7 @@ function react (message, emote, limit) {
 function inVoice(member) {
     const map = member.voiceChannel.members;
     const array = Array.from(map.keys());
-    return array.includes(config.id);
+    return array.includes(id);
 }
 
 // Create an event listener for messages
@@ -79,7 +74,7 @@ client.on('message', message => {
                     icon_url: client.user.avatarURL
                 },
                 title: "GitHub repo",
-                url: github,
+                url: config.link,
                 description: "Feel free to suggest features or fork and make a pull request!",
                 fields: [{
                     name: "!ping",
@@ -113,7 +108,7 @@ client.on('message', message => {
         case '!github': //(Because there are no break statements)
         case '!source':
             // Send a link to the source code
-            message.channel.send('Thats right! You\'re welcome to add features to the bot, ' + message.author + ' - ' + github);
+            message.channel.send('Thats right! You\'re welcome to add features to the bot, ' + message.author + ' - ' + config.link);
             break;
 
         case '!ermin':
@@ -222,5 +217,7 @@ client.on('voiceStateUpdate', member => {
     }
 })
 
-// Log our bot in
-client.login(token);
+// Log our bot in with
+// the token of the bot - 
+// https://discordapp.com/developers/applications/me
+client.login(config.token);
