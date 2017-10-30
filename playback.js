@@ -1,4 +1,5 @@
 const ytdl = require('ytdl-core');
+const YouTube = require('youtube-node');
 
 /**
  * Homemade module for handling streaming and playback of 
@@ -15,6 +16,7 @@ module.exports = class Playback {
         this.streamOptions = streamOptions;
         this.playlist = new Array();
         this.playing = false;
+        const yt = new YouTube();
     }
 
     /**
@@ -57,7 +59,24 @@ module.exports = class Playback {
      * @param {*} message 
      */
     queue(link, message) {
-        // Verify using ytdl?
+        const link_start = 'http://youtube.com/watch?';
+        
+        if (link.substr(0, link_start.length - 1) != link_start) {
+            yt.search(link, 1, function (error, result) {
+                
+                if (error) {
+                    console.log(error);
+                    // Message the user
+                    return;
+                }
+                else {
+                    // Find everything
+                }
+            })
+        }
+        else {
+            // Verify YouTube link
+        }
 
         // Add the song to the playlist
         this.playlist.push(link);
