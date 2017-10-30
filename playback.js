@@ -20,7 +20,7 @@ module.exports = class Playback {
     /**
      * Terminates voice connection
      */
-    end() {
+    terminate() {
         this.connection.disconnect();
         this.playing = false;
     }
@@ -30,17 +30,13 @@ module.exports = class Playback {
      */
     play() {
         // Get next link in queue
-        const link = this.playlist.shift();
-        console.log("Playlist link: " + link);
-        console.log("Playlist play: " + this.playlist);        
+        const link = this.playlist.shift();      
 
         // Initiate playback
         this.stream = ytdl(link, { filter: 'audioonly' });
         const bc = this.client.createVoiceBroadcast();
         this.broadcast = bc.playStream(this.stream);
         this.dispatcher = this.connection.playBroadcast(this.broadcast);
-
-        console.log("Playing music!");
 
         this.dispatcher.once('end', () => {
             // When the song ends either play next in playlist 
@@ -50,7 +46,7 @@ module.exports = class Playback {
             }
             // or terminate voice connection
             else {
-                this.end();
+                this.terminate();
             }
         });
     }
@@ -65,12 +61,11 @@ module.exports = class Playback {
 
         // Add the song to the playlist
         this.playlist.push(link);
-        console.log("Playlist queue: " + this.playlist);
 
         if (this.playing) {
             // If we're already playing, tell the user 
             // that their song request was added to the queue
-            message.channel.send("Added link to !queue, " + message.author);
+            message.reply("added link to !queue");
         }
         else {
             // if not, join voice channel and start jamming!
@@ -95,7 +90,7 @@ module.exports = class Playback {
      * Resumes playback
      */
     resume() {
-        this.stream.pause();
+        this.stream.pause(); // <- why tho
         this.broadcast.resume();
     }
 

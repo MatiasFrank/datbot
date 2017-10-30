@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/kuff/datbot#readme",
   "dependencies": {
-    "discord.js": "^11.2.1"
+    "discord.js": "^11.2.1",
+    "ffmpeg-binaries": "^3.2.2-3",
+    "ytdl-core": "^0.18.1"
   }
 }
