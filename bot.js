@@ -40,7 +40,7 @@ function react (message, emote, limit = 1) {
         .then(result => {
             result.forEach(message => {
                 message.react(emote);
-            })
+            });
         });
 }
 
@@ -57,7 +57,7 @@ client.on('message', message => {
         
         case '!ping':
             // Pong the pinger!
-            message.channel.send('pong');
+            message.reply('pong');
             break; // Remember to break!
 
         case '!help':
@@ -69,7 +69,7 @@ client.on('message', message => {
         case '!github': // (Because there are no break statements)
         case '!source':
             // Send a link to the source code
-            message.channel.send('Thats right! You\'re welcome to add features to the bot, ' + message.author + ' - ' + link);
+            message.reply('thats right, you\'re welcome to add features to the bot - ' + link);
             break;
 
         case '!ermin':
@@ -85,7 +85,7 @@ client.on('message', message => {
                         message.reply("we do not have that many ermin quotes ... yet!");
                     }
                     else {
-                        message.channel.send("unexpected input!```js\n > !ermin { optional: Integer }```");
+                        message.reply("unexpected input!```js\n > !ermin { optional: Integer }```");
                     }
                 }
             }
@@ -106,14 +106,14 @@ client.on('message', message => {
         // For each word in message recived
         const word = elem.toLowerCase();
 
-        const trigger1 = ["incest", "ermin", "søster"];
-        if (trigger1.indexOf(word) > 0) {
+        let trigger = ["incest", "ermin", "søster"];
+        if (trigger.indexOf(word) > 0) {
             // If any sentence mentions "incest" or "søster", react with Ermin's face
             react(message, ermin);
         }
 
-        const trigger2 = ["fuck", "shit", "lort", "røvhul"];
-        if (trigger2.indexOf(word) > 0) {
+        trigger = ["fuck", "shit", "lort", "røvhul"];
+        if (trigger.indexOf(word) > 0) {
             message.reply("tal ordenligt!")
         }
 

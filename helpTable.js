@@ -1,8 +1,8 @@
 /**
- * The table of available commands that is to sent via 
- * dm to the requesting user with !help
+ * The table of available commands that is to be 
+ * sent via dm to the requesting user with !help
  */
-module.exports = (github) => {
+module.exports = github => {
     return {
         color: 3447003,
         author: {
