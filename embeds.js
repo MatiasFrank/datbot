@@ -29,6 +29,14 @@ module.exports = {
                     value: "Retrives a link to the github repo."
                 },
                 {
+                    name: "!ermin { optional: integer }",
+                    value: "Retrives a specific quote indexed by an integer value, else return a random Ermin's quote if no integer parameter is specified."
+                },
+                {
+                    name: "!react",
+                    value: "React with Ermin's face on the last five messages posted in the channel."
+                },
+                {
                     name: "!play { search query or YouTube link }",
                     value: "*Experimental:* Searches YouTube for given parameter, then initiates playback of first video found. You must be in a voice channel to use this command."
                 },

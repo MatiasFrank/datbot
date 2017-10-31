@@ -27,7 +27,7 @@ client.on('ready', () => {
  * @param {*} emote 
  * @param {*This should be at least 1} limit 
  */
-function react (message, emote, limit) {
+function react (message, emote, limit = 1) {
     message.channel.fetchMessages({limit: limit})
         .then((result) => {
             result.forEach(message => {
@@ -183,10 +183,20 @@ client.on('message', message => {
     }
 
     words.find(elem => {
-        if (elem === "incest" || elem === "søster") {
+        // For each word in message recived
+        const word = elem.toLowerCase();
+
+        let trigger = ["incest", "ermin", "søster"];
+        if (trigger.indexOf(word) >= 0) {
             // If any sentence mentions "incest" or "søster", react with Ermin's face
-            react(message, ermin, 1);
+            react(message, ermin);
         }
+
+        trigger = ["fuck", "shit", "lort", "røvhul"];
+        if (trigger.indexOf(word) >= 0) {
+            message.reply("tal ordenligt!")
+        }
+
         // Add handlers for other mentions here
     });
 });
