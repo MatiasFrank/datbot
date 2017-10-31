@@ -1,6 +1,6 @@
 {
   "name": "datbot",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A Discord bot written in JavaScript using Discord.js",
   "main": "bot.js",
   "scripts": {
@@ -20,6 +20,7 @@
     "discord.js": "^11.2.1",
     "ffmpeg-binaries": "^3.2.2-3",
     "opusscript": "0.0.4",
+    "youtube-info": "^1.1.2",
     "ytdl-core": "^0.18.1"
   }
 }

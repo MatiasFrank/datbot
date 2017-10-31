@@ -1,3 +1,4 @@
+// The importz
 const config = require('./config.json');
 
 /**
@@ -14,11 +15,11 @@ module.exports = {
             embed: {
                 color: 3447003,
                 author: {
-                    name: "!help has arrived"
+                    name: "Help has arrived"
                 },
-                title: "View GitHub repo for full list of available commands",
+                title: "View GitHub repo",
                 url: config.link,
-                description: "Feel free to suggest features or fork and make a pull request!",
+                description: "Feel free to suggest features or fork and make them yourself!",
                 fields: [{
                     name: "!ping",
                     value: "Test the bot in selected channel. Retrives \"pong\"."
@@ -28,29 +29,29 @@ module.exports = {
                     value: "Retrives a link to the github repo."
                 },
                 {
-                    name: "!play <Search query, YouTube link>",
-                    value: "Searches youtube for given parameter, then initiates playback of first video found. You must be in a voice channel to use this command."
+                    name: "!play { search query or YouTube link }",
+                    value: "*Experimental:* Searches YouTube for given parameter, then initiates playback of first video found. You must be in a voice channel to use this command."
                 },
                 {
                     name: "!skip",
-                    value: "Skips the song currently playing."
+                    value: "*Experimental:* Skips the song currently playing."
                 },
                 {
                     name: "!pause",
-                    value: "Pauses playback. You must be in the same voice channel as the bot to use this command and music has to be playing."
+                    value: "*Experimental:* Pauses playback. You must be in the same voice channel as the bot to use this command and music has to be playing."
                 },
                 {
                     name: "!resume",
-                    value: "Resumes playback. You must be in the same voice channel as the bot to use this command and music has to be playing."
-                },
-                /*{
+                    value: "*Experimental:* Resumes playback. You must be in the same voice channel as the bot to use this command and music has to be paused."
+                }/*,
+                {
                     name: "!volume <Integer>",
                     value: "Sets playback volume to given parameter. Must be between 1 and 100. You must be in the same voice channel as the bot to use this command and music has to be playing."
-                },*/
+                },
                 {
-                    name: "!queue",
-                    value: "Retrieves a list of queued songs."
-                }],
+                    name: "!queue, !playlist",
+                    value: "*Experimental:* Retrieves a list of queued songs."
+                }*/],
                 timestamp: new Date(),
                 footer: {
                     text: "!help @ DatBot :*"
@@ -58,25 +59,46 @@ module.exports = {
             }
         };
     },
-    playing: function(data) {
+    playing: function(data, playlist) {
+        const minutes = Math.floor(data.video.duration / 60);
+        const seconds = data.video.duration % 60;
+        const nextTitle = ((playlist.length != 0) ? playlist[0].video.title : "Nothing in queue! Do `!play { search query or YouTube link }` to add to it.");
+        const nextChannel = ((playlist.length != 0) ? "\nby " + playlist[0].video.owner : "");
+        const nextUser = ((playlist.length != 0) ? "\nsuggested by " + playlist[0].message.author : "");
         return {
-            content: data.message.author + ", currently playing:",
+            content: data.message.author + ", now playing:",
             embed: {
-                title: data.snippet.title,
-                description: data.snippet.description,
-                url: data.url,
+                title: data.video.title,
+                description: data.description,
+                url: data.video.url,
                 color: 3447003,
                 timestamp: data.timestamp,
                 footer: {
                     icon_url: data.message.author.avatarURL,
                     text: "requested by " + data.message.author
                 },
-                image: {
-                    url: data.snippet.thumbnails.default.url
+                thumbnail: {
+                    url: data.video.thumbnailUrl
                 },
                 author: {
-                    name: data.snippet.channelTitle,
-                }
+                    name: data.video.owner
+                },
+                fields: [
+                    {
+                        name: "Views",
+                        value: data.video.views,
+                        inline: true
+                    },
+                    {
+                        name: "Duration",
+                        value: minutes + ":" + ((seconds < 10) ? "0" + seconds: seconds),
+                        inline: true
+                    },
+                    {
+                        name: "Up next:",
+                        value: nextTitle + nextChannel + nextUser
+                    }
+                ]
             }
         };
     }

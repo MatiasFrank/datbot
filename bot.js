@@ -42,9 +42,14 @@ function react (message, emote, limit) {
  * @param {*} member 
  */
 function inVoice(member) {
-    const map = member.voiceChannel.members;
-    const array = Array.from(map.keys());
-    return array.includes(config.id);
+    try {
+        const map = member.voiceChannel.members;
+        const array = Array.from(map.keys());
+        return array.includes(config.id);
+    }
+    catch (error) {
+        return false;
+    }
 }
 
 // Create an event listener for messages
@@ -60,7 +65,7 @@ client.on('message', message => {
         
         case '!ping':
             // Pong the pinger!
-            message.channel.send('pong');
+            message.reply('pong!');
             break; // Remember to break!
 
         case '!help':
@@ -72,7 +77,7 @@ client.on('message', message => {
         case '!github': //(Because there are no break statements)
         case '!source':
             // Send a link to the source code
-            message.channel.send('Thats right! You\'re welcome to add features to the bot, ' + message.author + ' - ' + config.link);
+            message.channel.send(`Thats right, ${message.author} !\nYou\'re welcome to add features to the bot - ${config.link}`);
             break;
 
         case '!ermin':
@@ -85,10 +90,10 @@ client.on('message', message => {
                 else {
                     // Handling invalid inputs
                     if (quotes.ermin.amount < words[1]) {
-                        message.channel.send("Error: We do not have that many ermin quotes... yet!");
+                        message.channel.send(`I do not know that many ermin quotes, ${message.author} !`);
                     }
                     else {
-                        message.channel.send("Error: Unexpected input. Try: >> !ermin { Integer } <<");
+                        message.channel.send("You must specify an Integer value, " + message.author + " !\nTry: `!ermin { Integer }`");
                     }
                 }
             }
@@ -106,48 +111,61 @@ client.on('message', message => {
         
         case '!play':
             // Playback link passed as parameter
-            if (message.member.voiceChannel != undefined) {
-
-                if (words[1] != undefined) {
-                    // Pass parameter given to queue
-                    const link = words.splice(1,words.length - 1);
+            try {
+                if (message.member.voiceChannel != undefined) {
     
-                    // Start playing
-                    pb.queue(link, message);
+                    if (words[1] != undefined) {
+                        // Pass parameter given to queue
+                        const query = words.splice(1, words.length - 1).join(' ');
+        
+                        // Start playing
+                        pb.queue(query, message);
+                    }
+                    else {
+                        message.reply(`You must specify a valid YouTube link, ${message.author} !`);
+                        // Suggestion with formatting
+                    }
                 }
                 else {
-                    message.reply(`you must specify a valid YouTube link!`);
-                    // Suggestion with formatting
+                    // handle incorrect input - no link specified
+                    message.channel.send(`You must be in a voice channel to listen to music, ${message.author} !`);
                 }
             }
-            else {
-                // handle incorrect input - no link specified
-                message.reply(`you must be in a voice channel to listen to music!`);
+            catch (error) {
+                console.log(error);
+                message.channel.send(`I'm terribly sorry but I simply cannot do that, ${message.author} !`);
             }
             break;
         
-        case '!volume':
+        /*case '!volume':
             // Changes volume to specified value if integer value 
             // is specified, else return value
             if (inVoice(message.member)) {
                 // The codezz
             }
-            break;
+            break;*/
         
         case '!pause':
             // Pause playback
-            if (inVoice(message.member)) {
+            if (inVoice(message.member) && pb.playing && !pb.paused) {
                 pb.pause();
+            }
+            else {
+                message.reply("you must be in the same voice channel as the bot and the music must be playing!")
             }
             break;
         
         case '!resume':
             // Resume playback
-            if (inVoice(message.member)) {
+            if (inVoice(message.member) && pb.playing && pb.paused) {
                 pb.resume();
+            }
+            else {
+                message.reply("you must be in the same voice channel as the bot and the music must be paused!")
             }
             break;
         
+        case '!playlist':
         case '!queue':
             // Retrived all queued songs
             // Format print: https://leovoel.github.io/embed-visualizer/
@@ -155,8 +173,11 @@ client.on('message', message => {
         
         case '!skip':
             // Skip song currently playing and play next in queue
-            if (inVoice(message.member)) {
+            if (inVoice(message.member) && pb.playing) {
                 pb.skip();
+            }
+            else {
+                message.reply("nothing to skip!")
             }
             break;
     }
