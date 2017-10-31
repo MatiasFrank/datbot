@@ -3,4 +3,6 @@
 
 [Add bot to server](https://discordapp.com/api/oauth2/authorize?client_id=372817180523233280&scope=bot&permissions=1)
 
+![image](https://i.imgur.com/JWbhrle.png)
+
 @ kuff
