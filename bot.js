@@ -7,6 +7,7 @@ const Discord = require('discord.js'); // Import the discord.js module
 const Playback = require('./playback.js'); // Import our own player
 const config = require('./config.json'); // Import json files
 const quotes = require('./quotes.json');
+const embeds = require('./embeds.js');
 
 // Instanciate classes
 const client = new Discord.Client(); // Create an instance of a Discord client
@@ -53,7 +54,6 @@ client.on('message', message => {
 
     // Find words in the message
     const words = message.content.split(" ");
-    //console.log("Words in message: " + words)
 
     // Switch between different cases
     switch(words[0]) {
@@ -65,41 +65,7 @@ client.on('message', message => {
 
         case '!help':
             // Send a pm with a table of available commands
-            message.author.sendMessage({embed: {
-                color: 3447003,
-                author: {
-                    name: "!help has arrived!",
-                    icon_url: client.user.avatarURL
-                },
-                title: "GitHub repo",
-                url: config.link,
-                description: "Feel free to suggest features or fork and make a pull request!",
-                fields: [{
-                    name: "!ping",
-                    value: "Test the bot in selected channel. Retrives \"pong\"."
-                },
-                {
-                    name: "!help",
-                    value: "The command you just typed! Learn about all available commands.",
-                },
-                {
-                    name: "!code, !github, !source",
-                    value: "Retrives a link to the github repo."
-                },
-                {
-                    name: "!ermin",
-                    value: "Retrives a random Ermin quote."
-                },
-                {
-                    name: "!ermin { Integer }",
-                    value: "Retrives a specific Ermin quote, specified by an integer value."
-                }],
-                timestamp: new Date(),
-                footer: {
-                    icon_url: client.user.avatarURL,
-                    text: "!help @ DatBot :*"
-                }
-            }});
+            message.author.send(embeds.help());
             break;
 
         case '!code': // Nesting cases creates synonyms!
@@ -141,12 +107,13 @@ client.on('message', message => {
         case '!play':
             // Playback link passed as parameter
             if (message.member.voiceChannel != undefined) {
+
                 if (words[1] != undefined) {
-                    // If a link is given, play it
-                    const link = words[1];
+                    // Pass parameter given to queue
+                    const link = words.splice(1,words.length - 1);
     
                     // Start playing
-                    pb.queue(link, message, client);
+                    pb.queue(link, message);
                 }
                 else {
                     message.reply(`you must specify a valid YouTube link!`);
@@ -183,6 +150,7 @@ client.on('message', message => {
         
         case '!queue':
             // Retrived all queued songs
+            // Format print: https://leovoel.github.io/embed-visualizer/
             break;
         
         case '!skip':
@@ -203,6 +171,7 @@ client.on('message', message => {
 });
 
 client.on('voiceStateUpdate', member => {
+    // Broken
     if (member.voiceChannel != undefined) {
 
         const map = member.voiceChannel.members;
