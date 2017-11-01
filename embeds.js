@@ -38,11 +38,11 @@ module.exports = {
                 },
                 {
                     name: "!play { search query or YouTube link }",
-                    value: "*Experimental:* Searches YouTube for given parameter, then initiates playback of first video found. You must be in a voice channel to use this command."
+                    value: "*Experimental:* Searches YouTube for given parameter, then initiates playback of first video found. You must be in a voice channel to use this command. If a song is already playing, the requested song is added to the queue."
                 },
                 {
                     name: "!skip",
-                    value: "*Experimental:* Skips the song currently playing."
+                    value: "*Experimental:* Skips the song currently playing. You must be in the same voice channel as the bot to use this command and music has to be playing."
                 },
                 {
                     name: "!pause",
