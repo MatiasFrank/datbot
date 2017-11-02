@@ -145,5 +145,27 @@ module.exports = {
                 ]
             }
         }
+    },
+    ping: client => {
+        return {
+            embed: {
+                color: 3447003,
+                footer: {
+                    text: "A heatbeat is sent every 45 seconds"
+                },
+                fields: [
+                    {
+                        name: "Latest heatbeat",
+                        value: `${client.pings[0]} ms`,
+                        inline: true
+                    },
+                    {
+                        name: "Avarage:",
+                        value: `${Math.round(client.ping)} ms`,
+                        inline: true
+                    }
+                ]
+            }
+        }
     }
 }

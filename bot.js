@@ -66,6 +66,7 @@ client.on('message', message => {
         case '!ping':
             // Pong the pinger!
             message.reply('pong!');
+            message.channel.send(embeds.ping(client));
             break; // Remember to break!
 
         case '!help':
@@ -202,7 +203,7 @@ client.on('message', message => {
 });
 
 client.on('voiceStateUpdate', member => {
-    // Broken
+    
     if (member.voiceChannel != undefined) {
 
         const map = member.voiceChannel.members;
