@@ -68,9 +68,29 @@ module.exports = {
 
         const minutes = Math.floor(data.video.duration / 60);
         const seconds = data.video.duration % 60;
+
         const nextTitle = ((playlist.length != 0) ? playlist[0].video.title : "Nothing in queue! Do `!play { search query or YouTube link }` to add to it.");
         const nextChannel = ((playlist.length != 0) ? "\nby " + playlist[0].video.owner : "");
         const nextUser = ((playlist.length != 0) ? "\nsuggested by " + playlist[0].message.author : "");
+
+        // Spaghetti code for inserting periods in view count
+        // This took way too long to do...
+        const views_number = data.video.views;
+        const views_string = views_number.toString();
+        let views = '';
+
+        for (i = 0; 3 + i <= views_string.length;) {
+            if (i > 0 || views_string.length % 3 == 0) {
+                views += views_string.slice(i, 3 + i);
+                i += 3;
+            }
+            else {
+                views += views_string.slice(i, views_string.length % 3)
+                i += views_string.length % 3;
+            }
+            views += '.';
+        }
+        views = views.substring(0, views.length - 1);
 
         return {
             embed: {
@@ -92,12 +112,12 @@ module.exports = {
                 fields: [
                     {
                         name: "Views",
-                        value: data.video.views,
+                        value: views,
                         inline: true
                     },
                     {
                         name: "Duration",
-                        value: minutes + ":" + ((seconds < 10) ? "0" + seconds: seconds),
+                        value: minutes + ":" + ((seconds < 10) ? "0" + seconds : seconds),
                         inline: true
                     },
                     {
@@ -139,7 +159,7 @@ module.exports = {
                     },
                     {
                         name: "Time till played",
-                        value: "~ " + minutes + ":" + seconds,
+                        value: "~ " + minutes + ":" + ((seconds < 10) ? "0" + seconds : seconds),
                         inline: true
                     }
                 ]
