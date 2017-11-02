@@ -70,7 +70,7 @@ client.on('message', message => {
 
         case '!help':
             // Send a pm with a table of available commands
-            message.author.send(embeds.help());
+            message.author.send(embeds.help(config.link));
             break;
 
         case '!code': // Nesting cases creates synonyms!
@@ -122,7 +122,7 @@ client.on('message', message => {
                         pb.queue(query, message);
                     }
                     else {
-                        message.reply(`You must specify a valid YouTube link, ${message.author} !`);
+                        message.channel.send(`You must specify a valid YouTube link or search query, ${message.author} !`);
                         // Suggestion with formatting
                     }
                 }

@@ -38,8 +38,13 @@ module.exports = class Playback {
      */
     play() {
         // Get next link in queue
-        const data = this.playlist.shift();    
-        //console.log(data);  
+        const data = this.playlist.shift();
+
+        // Update song length
+        global.time = {
+            duration: data.video.duration,
+            timestamp: new Date()
+        };
 
         // Initiate playback
         this.stream = ytdl(data.video.url, { filter: 'audioonly' });
@@ -48,7 +53,9 @@ module.exports = class Playback {
         this.dispatcher = this.connection.playBroadcast(this.broadcast);
 
         // Send a formatted "Now playing" message
-        data.message.channel.send(embeds.playing(data, this.playlist));
+        const embed = embeds.playing(data, this.playlist);
+        //data.message.channel.send(data.message.author + ", now playing:", {embed: embed});
+        data.message.channel.send(embed);
 
         this.broadcast.once('end', () => {
             // When the song ends either play next in playlist 
@@ -81,7 +88,7 @@ module.exports = class Playback {
                         return element.id.kind === 'youtube#video';    
                     });
                     fetch(video.id.videoId).then( (data) => {
-                        //console.log("Video: " + JSON.stringify(video));
+
                         resolve({
                             video:          data,
                             description:    video.snippet.description,
@@ -89,11 +96,6 @@ module.exports = class Playback {
                             timestamp:      new Date()
                         })
                     });
-                    
-                    /*console.log("result body: " + result);
-                    console.log("Video url: " + JSON.stringify(url));
-                    console.log("Video snippet: " + JSON.stringify(snippet));
-                    console.log("Message: " + message);*/
                 }
                 catch (error) {
                     console.log(error);
@@ -117,7 +119,9 @@ module.exports = class Playback {
             if (this.playing) {
                 // If we're already playing, tell the user 
                 // that their song request was added to the queue
-                message.reply("added link to !queue");
+                //message.reply("added link to !queue");
+                message.channel.send(embeds.queue(result, this.playlist, global.time));
+
             }
             else {
                 // if not, join voice channel and start jamming!

@@ -1,6 +1,3 @@
-// The importz
-const config = require('./config.json');
-
 /**
  * help:
  * The table of available commands that is to be 
@@ -10,7 +7,7 @@ const config = require('./config.json');
  * The embed that is sent when a song starts playing
  */
 module.exports = {
-    help: () => {
+    help: link => {
         return {
             embed: {
                 color: 3447003,
@@ -18,7 +15,7 @@ module.exports = {
                     name: "Help has arrived"
                 },
                 title: "View GitHub repo",
-                url: config.link,
+                url: link,
                 description: "Feel free to suggest features or fork and make them yourself!",
                 fields: [{
                     name: "!ping",
@@ -67,14 +64,15 @@ module.exports = {
             }
         };
     },
-    playing: function(data, playlist) {
+    playing: (data, playlist) => {
+
         const minutes = Math.floor(data.video.duration / 60);
         const seconds = data.video.duration % 60;
         const nextTitle = ((playlist.length != 0) ? playlist[0].video.title : "Nothing in queue! Do `!play { search query or YouTube link }` to add to it.");
         const nextChannel = ((playlist.length != 0) ? "\nby " + playlist[0].video.owner : "");
         const nextUser = ((playlist.length != 0) ? "\nsuggested by " + playlist[0].message.author : "");
+
         return {
-            content: data.message.author + ", now playing:",
             embed: {
                 title: data.video.title,
                 description: data.description,
@@ -83,7 +81,7 @@ module.exports = {
                 timestamp: data.timestamp,
                 footer: {
                     icon_url: data.message.author.avatarURL,
-                    text: "requested by " + data.message.author
+                    text: "Requested by " + data.message.author.username
                 },
                 thumbnail: {
                     url: data.video.thumbnailUrl
@@ -109,5 +107,43 @@ module.exports = {
                 ]
             }
         };
+    },
+    queue: (data, playlist, time) => {
+
+        const left_of_song = Math.floor((Date.now() - global.time.timestamp) / 1000);
+        let playlist_time = 0;
+        playlist.forEach( elem => {
+            playlist_time += elem.video.duration;
+        });
+
+        const minutes = Math.floor((left_of_song + playlist_time) / 60);
+        const seconds = (left_of_song + playlist_time) % 60;
+
+        return {
+            embed: {
+                title: data.video.title,
+                description: `by ${data.video.owner}`,
+                url: data.video.url,
+                color: 3447003,
+                thumbnail: {
+                    url: data.video.thumbnailUrl
+                },
+                author: {
+                    name: "Added to queue:"
+                },
+                fields: [
+                    {
+                        name: "Place in queue",
+                        value: playlist.length,
+                        inline: true
+                    },
+                    {
+                        name: "Time till played",
+                        value: "~ " + minutes + ":" + seconds,
+                        inline: true
+                    }
+                ]
+            }
+        }
     }
 }
