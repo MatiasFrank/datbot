@@ -130,14 +130,15 @@ module.exports = {
     },
     queue: (data, playlist, time) => {
 
-        const left_of_song = Math.floor((Date.now() - global.time.timestamp) / 1000);
+        const left_of_song = Math.floor(time.duration - ((Date.now() - global.time.timestamp)) / 1000);
         let playlist_time = 0;
         playlist.forEach( elem => {
             playlist_time += elem.video.duration;
         });
+        const queue_time = left_of_song + playlist_time - data.video.duration;
 
-        const minutes = Math.floor((left_of_song + playlist_time) / 60);
-        const seconds = (left_of_song + playlist_time) % 60;
+        const minutes = Math.floor((queue_time) / 60);
+        const seconds = (queue_time) % 60;
 
         return {
             embed: {
@@ -158,7 +159,7 @@ module.exports = {
                         inline: true
                     },
                     {
-                        name: "Time till played",
+                        name: "Queue time",
                         value: "~ " + minutes + ":" + ((seconds < 10) ? "0" + seconds : seconds),
                         inline: true
                     }

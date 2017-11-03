@@ -57,7 +57,7 @@ module.exports = class Playback {
         //data.message.channel.send(data.message.author + ", now playing:", {embed: embed});
         data.message.channel.send(embed);
 
-        this.broadcast.once('end', () => {
+        this.dispatcher.once('end', () => {
             // When the song ends either play next in playlist 
 
             if (this.playlist.length > 0) {
