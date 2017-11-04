@@ -52,6 +52,21 @@ function inVoice(member) {
     }
 }
 
+/**
+ * Do something if a message contains a substring 
+ * of one of the specified triggers
+ * @param {*A message!} message 
+ * @param {*An array!} trigger 
+ * @param {*A function!} callback 
+ */
+function scan(message, trigger, func) {
+    for (let t = 0; t < trigger.length; t++) {
+        if (message.content.indexOf(trigger[t]) !== -1) {
+            return func();
+        }
+    }
+}
+
 // Create an event listener for messages
 client.on('message', message => {
     // Defining emotes here
@@ -129,7 +144,7 @@ client.on('message', message => {
                 }
                 else {
                     // handle incorrect input - no link specified
-                    message.channel.send(`You must be in a voice channel to listen to music, ${message.author} !`);
+                    message.channel.send(`You must be in a voice channel as me to listen to music, ${message.author} !`);
                 }
             }
             catch (error) {
@@ -138,13 +153,40 @@ client.on('message', message => {
             }
             break;
         
-        /*case '!volume':
+        case '!volume':
             // Changes volume to specified value if integer value 
-            // is specified, else return value
-            if (inVoice(message.member)) {
-                // The codezz
+            // is specified, else return volume in db
+            if (pb.playing && !pb.paused) {
+
+                if (words[1]) {
+
+                    if (inVoice(message.member)) {
+    
+                        if (words[1] < 11 && words[1] > 0) {
+
+                            try {
+                                pb.setVolume(words[1]);
+                            }
+                            catch (error) {
+                                message.channel.send(`Invalid input, expected Integer, ${message.author}`);
+                            }
+                        }
+                        else {
+                            message.channel.send('The integer value specified must be between 1 and 10 inclusive, ' + message.author + " !");
+                        }
+                    }
+                    else {
+                        message.channel.send(`You must be in the same voice channel as me to issue voice commands, ${message.author} !`);
+                    }
+                }
+                else {
+                    message.channel.send("The current playback volume is " + pb.getVolume() + "/10. To change this, do `!volume { Integer }`, where the integer value is between 1 and 10 inclusive, " + message.author + " !");
+                }
             }
-            break;*/
+            else {
+                message.channel.send(`You must be listening to music in order to change the volume, ${message.author} !`);
+            }
+            break;
         
         case '!pause':
             // Pause playback
@@ -152,7 +194,7 @@ client.on('message', message => {
                 pb.pause();
             }
             else {
-                message.reply("you must be in the same voice channel as the bot and the music must be playing!")
+                message.reply("you must be in the same voice channel as me and the music must be playing!")
             }
             break;
         
@@ -162,7 +204,7 @@ client.on('message', message => {
                 pb.resume();
             }
             else {
-                message.reply("you must be in the same voice channel as the bot and the music must be paused!")
+                message.reply("you must be in the same voice channel as me and the music must be paused!")
             }
             break;
         
@@ -183,23 +225,15 @@ client.on('message', message => {
             break;
     }
 
-    words.find(elem => {
-        // For each word in message recived
-        const word = elem.toLowerCase();
+    scan(message, 
+        ["incest", "ermin", "søster"], 
+        () => react(message, ermin));
 
-        let trigger = ["incest", "ermin", "søster"];
-        if (trigger.indexOf(word) >= 0) {
-            // If any sentence mentions "incest" or "søster", react with Ermin's face
-            react(message, ermin);
-        }
-
-        trigger = ["fuck", "shit", "lort", "røvhul"];
-        if (trigger.indexOf(word) >= 0) {
-            message.reply("tal ordenligt!")
-        }
-
-        // Add handlers for other mentions here
-    });
+    scan(message, 
+        ["fuck", "shit", "lort", "røvhul"],
+        () => message.reply("tal ordenligt!"));
+    
+    // Add handlers for other mentions here
 });
 
 client.on('voiceStateUpdate', member => {

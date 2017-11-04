@@ -15,14 +15,15 @@ module.exports = class Playback {
      * @param {*} client 
      * @param {*} streamOptions 
      */
-    constructor(client, streamOptions = { seek: 0, volume: 0.1, bitrate: 'auto' }) {
+    constructor(client)
+    {
         this.client = client;
-        this.streamOptions = streamOptions;
         this.playlist = [];
         this.playing = false;
         this.paused = false;
         this.yt = new YouTube();
         this.yt.setKey(config.yt_key);
+        this.volume = 0.2;
     }
 
     /**
@@ -45,6 +46,7 @@ module.exports = class Playback {
         const bc = this.client.createVoiceBroadcast();
         this.broadcast = bc.playStream(this.stream);
         this.connection.playBroadcast(this.broadcast);
+        this.broadcast.setVolume(this.volume)
 
         // Update song length
         global.time = {
@@ -161,10 +163,17 @@ module.exports = class Playback {
     }
 
     /**
+     * Retrieves current playback volume
+     */
+    getVolume() {
+        return this.broadcast.volume * 15;
+    }
+
+    /**
      * Adjusts volume to given parameter
      * @param {*} val 
      */
     setVolume(val) {
-        // Code goes here...
+        this.broadcast.setVolume(val / 15);
     }
 }
