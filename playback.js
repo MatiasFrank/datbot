@@ -39,18 +39,18 @@ module.exports = class Playback {
     play() {
         // Get next link in queue
         const data = this.playlist.shift();
+        
+        // Initiate playback
+        this.stream = ytdl(data.video.url, { filter: 'audioonly' });
+        const bc = this.client.createVoiceBroadcast();
+        this.broadcast = bc.playStream(this.stream);
+        this.connection.playBroadcast(this.broadcast);
 
         // Update song length
         global.time = {
             duration: data.video.duration,
             timestamp: new Date()
         };
-
-        // Initiate playback
-        this.stream = ytdl(data.video.url, { filter: 'audioonly' });
-        const bc = this.client.createVoiceBroadcast();
-        this.broadcast = bc.playStream(this.stream);
-        this.connection.playBroadcast(this.broadcast);
 
         // Send a formatted "Now playing" message
         const embed = embeds.playing(data, this.playlist);
