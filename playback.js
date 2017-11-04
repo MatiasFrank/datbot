@@ -50,14 +50,13 @@ module.exports = class Playback {
         this.stream = ytdl(data.video.url, { filter: 'audioonly' });
         const bc = this.client.createVoiceBroadcast();
         this.broadcast = bc.playStream(this.stream);
-        this.dispatcher = this.connection.playBroadcast(this.broadcast);
+        this.connection.playBroadcast(this.broadcast);
 
         // Send a formatted "Now playing" message
         const embed = embeds.playing(data, this.playlist);
-        //data.message.channel.send(data.message.author + ", now playing:", {embed: embed});
         data.message.channel.send(embed);
 
-        this.dispatcher.once('end', () => {
+        this.broadcast.once('end', () => {
             // When the song ends either play next in playlist 
 
             if (this.playlist.length > 0) {
@@ -134,7 +133,6 @@ module.exports = class Playback {
             }
         }, err => {
             // Tell the user about this!!
-            console.log(err);
             message.channel.send(`Could not find any video that had anything to do with \"${query}\", ${message.author} !`);
         });
     }
@@ -143,7 +141,6 @@ module.exports = class Playback {
      * Pauses playback
      */
     pause() {
-        this.stream.pause();
         this.broadcast.pause();
         this.paused = true;
     }
@@ -152,7 +149,6 @@ module.exports = class Playback {
      * Resumes playback
      */
     resume() {
-        this.stream.pause(); // <- why tho
         this.broadcast.resume();
         this.paused = false;
     }
@@ -161,9 +157,6 @@ module.exports = class Playback {
      * Skips the current song being played
      */
     skip() {
-        //this.dispatcher.end();
-        this.stream.destroy();
-        this.dispatcher.end();
         this.broadcast.end();
     }
 
