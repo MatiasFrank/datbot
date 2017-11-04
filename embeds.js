@@ -19,7 +19,7 @@ module.exports = {
                 description: "Feel free to suggest features or fork and make them yourself!",
                 fields: [{
                     name: "!ping",
-                    value: "Test the bot in selected channel. Retrives \"pong\"."
+                    value: "Test the bot in selected channel. Retrives \"pong\" and some latency data."
                 },
                 {
                     name: "!code, !github, !source",
@@ -36,6 +36,10 @@ module.exports = {
                 {
                     name: "!play { search query or YouTube link }",
                     value: "*Experimental:* Searches YouTube for given parameter, then initiates playback of first video found. You must be in a voice channel to use this command. If a song is already playing, the requested song is added to the queue."
+                },
+                {
+                    name: "!volume { optional: Integer }",
+                    value: "*Experimental:* Retrieves current playback volume if no parameter is specified. Else, sets volume to specified integer value. This value must be between 1 and 10 inclusive. You must be in the same voice channel as the bot to use this command and music has to be playing."
                 },
                 {
                     name: "!skip",
