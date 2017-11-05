@@ -5,6 +5,15 @@
  * 
  * playing:
  * The embed that is sent when a song starts playing
+ * 
+ * queue:
+ * The embed that is sent when a song is added to the queue
+ * 
+ * ping:
+ * The embed that is sent on !ping
+ * 
+ * remaining
+ * The embed that is sent on !remaining
  */
 module.exports = {
     help: link => {
@@ -52,11 +61,11 @@ module.exports = {
                 {
                     name: "!resume",
                     value: "*Experimental:* Resumes playback. You must be in the same voice channel as the bot to use this command and music has to be paused."
-                }/*,
-                {
-                    name: "!volume <Integer>",
-                    value: "Sets playback volume to given parameter. Must be between 1 and 100. You must be in the same voice channel as the bot to use this command and music has to be playing."
                 },
+                {
+                    name: "!remaining",
+                    value: "*Experimental:* Retrieves the time remaining of the song currently playing and some data on the next song in the queue. A song has to be playing for this command to work."
+                }/*,
                 {
                     name: "!queue, !playlist",
                     value: "*Experimental:* Retrieves a list of queued songs."
@@ -125,7 +134,7 @@ module.exports = {
                         inline: true
                     },
                     {
-                        name: "Up next:",
+                        name: "Up next",
                         value: nextTitle + nextChannel + nextUser
                     }
                 ]
@@ -134,7 +143,7 @@ module.exports = {
     },
     queue: (data, playlist, time) => {
 
-        const left_of_song = Math.floor(time.duration - ((Date.now() - global.time.timestamp)) / 1000);
+        const left_of_song = Math.floor(time.duration - ((Date.now() - time.timestamp)) / 1000);
         let playlist_time = 0;
         playlist.forEach( elem => {
             playlist_time += elem.video.duration;
@@ -187,6 +196,35 @@ module.exports = {
                     {
                         name: "Avarage:",
                         value: `${Math.round(client.ping)} ms`,
+                        inline: true
+                    }
+                ]
+            }
+        }
+    },
+    remaining: (time, playlist) => {
+
+        const rem = Math.floor(time.duration - (Date.now() - time.timestamp) / 1000);
+
+        const minutes = Math.floor((rem) / 60);
+        const seconds = (rem) % 60;
+
+        const nextTitle = ((playlist.length != 0) ? playlist[0].video.title : "Nothing in queue! Do `!play { search query or YouTube link }` to add to it.");
+        const nextChannel = ((playlist.length != 0) ? "\nby " + playlist[0].video.owner : "");
+        const nextUser = ((playlist.length != 0) ? "\nsuggested by " + playlist[0].message.author : "");
+
+        return {
+            embed: {
+                color: 3447003,
+                fields: [
+                    {
+                        name: "Time remaining",
+                        value: "~ " + minutes + ":" + ((seconds < 10) ? "0" + seconds : seconds),
+                        inline: true
+                    },
+                    {
+                        name: "Up next",
+                        value: nextTitle + nextChannel + nextUser,
                         inline: true
                     }
                 ]

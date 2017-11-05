@@ -223,6 +223,16 @@ client.on('message', message => {
                 message.reply("nothing to skip!")
             }
             break;
+
+        case '!remaining':
+            // Retrieves the time remaining of 
+            // the song currently playting
+            if (pb.playing) {
+                pb.remaining(message);
+            }
+            else {
+                message.channel.send(`There's no music playing, ${message.author} !`);
+            }
     }
 
     scan(message, 

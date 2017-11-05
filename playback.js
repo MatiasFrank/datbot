@@ -23,7 +23,7 @@ module.exports = class Playback {
         this.paused = false;
         this.yt = new YouTube();
         this.yt.setKey(config.yt_key);
-        this.volume = 0.2;
+        this.volume = 0.15;
     }
 
     /**
@@ -47,16 +47,16 @@ module.exports = class Playback {
         this.broadcast = bc.playStream(this.stream);
         this.connection.playBroadcast(this.broadcast);
         this.broadcast.setVolume(this.volume)
+        
+        // Send a formatted "Now playing" message
+        const embed = embeds.playing(data, this.playlist);
+        data.message.channel.send(embed);
 
         // Update song length
         global.time = {
             duration: data.video.duration,
             timestamp: new Date()
         };
-
-        // Send a formatted "Now playing" message
-        const embed = embeds.playing(data, this.playlist);
-        data.message.channel.send(embed);
 
         this.broadcast.once('end', () => {
             // When the song ends either play next in playlist 
@@ -120,7 +120,6 @@ module.exports = class Playback {
             if (this.playing) {
                 // If we're already playing, tell the user 
                 // that their song request was added to the queue
-                //message.reply("added link to !queue");
                 message.channel.send(embeds.queue(result, this.playlist, global.time));
 
             }
@@ -166,7 +165,7 @@ module.exports = class Playback {
      * Retrieves current playback volume
      */
     getVolume() {
-        return this.broadcast.volume * 15;
+        return this.broadcast.volume * 20;
     }
 
     /**
@@ -174,6 +173,15 @@ module.exports = class Playback {
      * @param {*} val 
      */
     setVolume(val) {
-        this.broadcast.setVolume(val / 15);
+        this.volume = val / 20;
+        this.broadcast.setVolume(this.volume);
+    }
+
+    /**
+     * Retrieves the time remaining of the song currently playing
+     */
+    remaining(message) {
+        const embed = embeds.remaining(global.time, this.playlist);
+        message.channel.send(embed);
     }
 }
