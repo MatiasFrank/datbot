@@ -59,9 +59,9 @@ function inVoice(member) {
  * @param {*An array!} trigger 
  * @param {*A function!} callback 
  */
-function scan(message, trigger, func) {
+function scan(content, trigger, func) {
     for (let t = 0; t < trigger.length; t++) {
-        if (message.content.indexOf(trigger[t]) !== -1) {
+        if (content.indexOf(trigger[t]) !== -1) {
             return func();
         }
     }
@@ -123,6 +123,11 @@ client.on('message', message => {
         case '!react':
             // React with Ermin's face on the last five messages posted
             react(message, ermin, 5);
+            break;
+        
+        case '!dropud':
+            // Help out a fellow in need
+            message.reply("www.dropud.nu/pizza");
             break;
         
         case '!play':
@@ -234,14 +239,25 @@ client.on('message', message => {
                 message.channel.send(`There's no music playing, ${message.author} !`);
             }
     }
+    const content = message.content.toLowerCase();
 
-    scan(message, 
+    scan(content,
         ["incest", "ermin", "søster"], 
         () => react(message, ermin));
 
-    scan(message, 
+    scan(content,
         ["fuck", "shit", "lort", "røvhul"],
         () => message.reply("tal ordenligt!"));
+    
+    scan(content,
+        ["?"],
+        () => message.channel.send(
+            `Hej ${message.author}\n`
+            + "Du skal være velkommen til at sende dine spørgsmål ind til Ermin Rayquaza Obradovacs DevelopmentTeam på følgende e - mail: obradovacpower @gmail.com\n"
+            + "\n"
+            + "Din mail vil blive besvaret inden 24 timer\n"
+            + "Vh Leader of Ermin Rayquaza Obradovac A/S"
+        ))
     
     // Add handlers for other mentions here
 });
